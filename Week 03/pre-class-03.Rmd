@@ -1,3 +1,56 @@
+---
+title: "Week 03"
+author: "Blessing A"
+date: "9/23/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+# pre-class
+
+
+This folder contains your first pre-class assignment. Remember to complete the flipped material first:
+
+
+## Flipped Material 
+
+- Sign into [Datacamp](https://www.datacamp.com/)
+- Complete [Joining Data in R with dplyr](https://www.datacamp.com/courses/joining-data-in-r-with-dplyr) course. 
+- Complete these steps for the assignment:
+    - Create a new folder in your pre-class Repository called: `Week 03`
+    - Copy the `readme.md` and `pre-class-03.Rmd` document into this.
+    - Follow the instructions and commit often. 
+
+
+
+Then proceed to the Pre Week 03 RMarkdown file, complete this and commit your work often to begin to learn how to make small changes and committing. 
+
+
 # pre-class
 
 
@@ -13,14 +66,19 @@ We will work with the dataset called [gapminder](https://github.com/jennybc/gapm
 install.packages("gapminder")
 ```
 
-
-
+```{r}
+install.packages("gapminder")
 ```
 library(dplyr)
 library(gapminder)
 gapminder
 ```
 
+```{r}
+library (dplyr)
+library(gapminder)
+gapminder
+```
 
 
 ### Pre-Class Problems
@@ -28,12 +86,81 @@ gapminder
 Use **dplyr** functions to address the following questions:
 
 1. How many unique countries are represented per continent?
-2. Which European nation had the lowest GDP per capita in 1997? 
+```{r}
+gapminder %>%
+group_by (country)
+#A total of 142 unique countries are represented per continent
+```
+
+2. Which European nation had the lowest GDP per capita in 1997?
+```{r}
+gapminder %>%
+filter(continent == "Europe", year == "1997") %>%
+arrange (gdpPercap)
+#The European nation with the lowest GDP per capita in 1997 was Albania
+```
 3. According to the data available, what was the average life expectancy across each continent in the 1980s?
+```{r}
+year_1980s <- gapminder %>%
+  group_by(year, continent) %>%
+  summarize(lifeExp = mean(lifeExp))
+  View(year_1980s)
+  #The average life expectancy across each continent in the 1980s was:
+  #1982	Africa	51.59287; 1982	Americas	66.22884; 1982	Asia	62.61794; 1982	Europe	 72.80640; 1982	Oceania	74.29000; 1987	Africa	53.34479; 1987	Americas	68.09072; 1987	Asia	64.85118;	1987	Europe	73.64217; and 1987	Oceania	75.32000
+```
+
 4. What 5 countries have the highest total GDP over all years combined?
+
+```{r}
+gapminder %>%
+  group_by(country) %>%
+  summarize(gdpPercap = sum(gdpPercap)) %>%
+  arrange (desc(gdpPercap))
+  #The 5 countries with the highest total GDP over all years combined are: Kuwait, Switzerland, Norway, United States and Canada
+```
 5. What countries and years had life expectancies of _at least_ 80 years? _N.b. only output the columns of interest: country, life expectancy and year (in that order)._
+```{r}
+lifeExp_atleast_80 <- gapminder %>%
+  select(-continent, -pop, -gdpPercap)%>%
+  group_by(country, lifeExp, year) %>%
+  filter (lifeExp >=80)
+  #The following countries had years had life expectancies of at least 80years: Australia (2002, 2007); Canada (2007); France (2007); Hong Kong, China (1997, 2002, 2007); Iceland (2002, 2007); Israel (2007); Italy (2002, 2007); Japan (1997, 2002, 2007); New Zealand (2007); Norway (2007); Spain (2007); Sweden (2002, 2007) and Switzerland (2002, 2007) 
+  ```
 6. What 10 countries have the strongest correlation (in either direction) between life expectancy and per capita GDP?
+```{r}
+gapminder %>%
+group_by(country) %>%
+select(-pop, -continent, -year) %>%
+arrange (desc(lifeExp, gdpPercap))
+```
+
 7. Which combinations of continent (besides Asia) and year have the highest average population across all countries? _N.b. your output should include all results sorted by highest average population_. With what you already know, this one may stump you. See [this Q&A](http://stackoverflow.com/q/27207963/654296) for how to `ungroup` before `arrange`ing. This also [behaves differently in more recent versions of dplyr](https://github.com/hadley/dplyr/releases/tag/v0.5.0).
+```{r}
+gapminder %>%
+group_by(continent, year) %>%
+summarize (pop = mean(pop)) %>%
+filter(continent %in% c("Africa", "Americas", "Europe", "Oceania")) %>%
+arrange(pop) %>%
+ungroup() %>%
+arrange(desc(pop))
+#The combinations of continent and year that have the highest average population across all countries are: the Americas (1972-2007)
+```
+
 8. Which three countries have had the most consistent population estimates (i.e. lowest standard deviation) across the years of available data? 
+```{r}
+gapminder %>%
+  group_by(country)%>%
+  #I am unable to answer this question
+```
 9. Subset **gm** to only include observations from 1992 and store the results as **gm1992**. What kind of object is this?
+```{r}
+gm1992 <- gapminder %>%
+    filter (year == 1992)
+gm1992
+#This is a tibble object that sorts all observations based on the year 1992
+```
 10. Which observations indicate that the population of a country has *decreased* from the previous year **and** the life expectancy has *increased* from the previous year? See [the vignette on window functions](https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html).
+```{r}
+#Use of the lag() function will indicate a decrease in population from the previous year and an increase in life expectancy from the previous year.
+```
+
