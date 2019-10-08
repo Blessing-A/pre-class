@@ -99,26 +99,32 @@ A. Create a function called standardize.me() that takes a numeric vector as an a
 
 ```{r }
 x <- c(1:10)
-standardize.me <- function(x = 1:10){ #created a function called standardize.me() with an argument that assigns x as numeric
-  x <-  -mean(x) /sd(x) #set the body of the function to return a standardized version of the vector where I subtract the mean of x and divided by the standard deviation of x
+standardize.me <- function(x){ #created a function called standardize.me() with an argument that assigns x as numeric
+  x <-  (x - mean(x, na.rm = TRUE)) /sd(x, na.rm = TRUE) #set the body of the function to return a standardized version of the vector where I subtract the mean of x and divided by the standard deviation of x
+  return(x) #this outputs x as a standardized function
 }
+
 #args(standardize)
 ```
 B. Assign all the numeric columns of the original WCGS dataset to a new dataset called WCGS.new.
 ```{r }
 library(dplyr) #called library dplyr
-WCGS.new <- select_if(wcgs, is.numeric) #used the dplyr function "select_if" to select all numeric columns in the original WCGS dataset and assigned them to the new dataset "WCGS.new"
+WCGS.new <- select(wcgs, -id, -behpat, -dibpat, -chd69, -typchd69, -arcus, -agecat) #used the dplyr function "select" to select all numeric columns in the original WCGS dataset by removing the indicated columns and assigned them to the new dataset "WCGS.new"
 ```
 
 C. Using a loop and your new function, standardize all the variables WCGS.new dataset.
 ```{r }
-for (i in WCGS.new){ #assigned the variable i to all the variables in the WCGS.new dataset
-  standardize.me(i) #I called the newly generated standardized.me function on i to see the standardization of all numeric columns in the WCGS.new dataset
+for (i in colnames (WCGS.new)){ #assigned the variable i to all the variables in the column of the WCGS.new dataset
+  WCGS.new[, i] <- standardize.me(WCGS.new[,i] ) #I called the newly generated standardized.me function on the colnames of i and performed an over-write of standarized dataset. 
   }
 
 ```
 D. What should the mean and standard deviation of all your new standardized variables be? Test your prediction by running a loop
 ```{r }
+for (i in colnames (WCGS.new)) {#Used the for loop to assign i to variables in the colnames of the WCGS.new dataset
+  WCGS.new_mean_sd <- c(mean(WCGS.new [,i], na.rm = TRUE),  sd(WCGS.new [,i], na.rm = TRUE)) #used to cantenation sign to combine the commands for finding the mean and standard deviation for iteration of all the numeric colnames in the WCGS.new dataset. Wraped the commands to a vector name.
+  print(WCGS.new_mean_sd) #printed the new vector to see all the means and sds for all the columns of the iterated dataset
+}
 
 ```
 
@@ -129,10 +135,14 @@ D. What should the mean and standard deviation of all your new standardized vari
 
 A. Using a loop, calculate the mean weight of the subjects separated by the type of CHD they have.
 ```{r }
+for (i in WCGS.new){
+  mean(WCGS.new, weight)
+}
 
 ```
 B. Now do the same thing, but now don’t use a loop
 ```{r }
+
 
 ```
 
