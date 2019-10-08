@@ -97,10 +97,10 @@ bmi     Body Mass Index
 
 A. Create a function called standardize.me() that takes a numeric vector as an argument, and returns the standardized version of the vector. 
 ```{r }
-standardize.me <- function(x = numeric) { #created a function called standardize.me() with an argument that assigns x as numeric
-  x-mean / sd #set the body of the function to return a standardized version of the vector
+x <- c(1:10)
+standardize.me <- function(x){ #created a function called standardize.me() with an argument that assigns x as numeric
+  x - mean / sd #set the body of the function to return a standardized version of the vector
 }
-
 ```
 B. Assign all the numeric columns of the original WCGS dataset to a new dataset called WCGS.new.
 ```{r }
@@ -110,6 +110,9 @@ WCGS.new <- select_if(wcgs, is.numeric) #used the dplyr function "select_if" to 
 
 C. Using a loop and your new function, standardize all the variables WCGS.new dataset.
 ```{r }
+for (i in WCGS.new){
+  standardize.me(i)
+  }
 
 ```
 D. What should the mean and standard deviation of all your new standardized variables be? Test your prediction by running a loop
