@@ -122,7 +122,7 @@ for (i in colnames (WCGS.new)){ #assigned the variable i to all the variables in
 D. What should the mean and standard deviation of all your new standardized variables be? Test your prediction by running a loop
 ```{r }
 for (i in colnames (WCGS.new)) {#Used the for loop to assign i to variables in the colnames of the WCGS.new dataset
-  WCGS.new_mean_sd <- c(mean(WCGS.new [,i], na.rm = TRUE),  sd(WCGS.new [,i], na.rm = TRUE)) #used to cantenation sign to combine the commands for finding the mean and standard deviation for iteration of all the numeric colnames in the WCGS.new dataset. Wraped the commands to a vector name.
+  WCGS.new_mean_sd <- c(mean(WCGS.new [,i], na.rm = TRUE),  sd(WCGS.new [,i], na.rm = TRUE)) #used the cantenation sign to combine the commands for finding the mean and standard deviation for iteration of all the numeric colnames in the WCGS.new dataset. Wraped the commands to a vector name.
   print(WCGS.new_mean_sd) #printed the new vector to see all the means and sds for all the columns of the iterated dataset
 }
 
@@ -135,13 +135,23 @@ for (i in colnames (WCGS.new)) {#Used the for loop to assign i to variables in t
 
 A. Using a loop, calculate the mean weight of the subjects separated by the type of CHD they have.
 ```{r }
-for (i in WCGS.new){
-  mean(WCGS.new, weight)
+mean_weight <- for (i in wcgs$typchd69) { #used the for loop to assign i to all variables of the typchd69 column in the "wcgs" dataset. Assigned this to a vector called "mean_weight"
+  mean(wcgs[,"weight"], na.rm = TRUE) #attempted to find the mean of the weight column
+  print(mean_weight) #printed out the vector name "mean_weight"
+  stop() #since there was an error in the code that caused it to continue running, I used the "stop()" function to terminate the run
+  
 }
 
 ```
 B. Now do the same thing, but now don’t use a loop
 ```{r }
+library(dplyr) #called the dplyr library
+wcgs %>% #called the wcgs dataset 
+  select(id, weight, typchd69)%>% #used the dplyr select function to select the variables "id", "weight" and "typch69"
+  group_by(typchd69)%>% #grouped_by typchd69
+  summarize(mean_weight = mean(weight))%>% #summarized the mean of the weight for the subjects according to their type of cdh
+  collect() #used the dplyr collect function to retrieve the data into a local tibble
+  
 
 
 ```
