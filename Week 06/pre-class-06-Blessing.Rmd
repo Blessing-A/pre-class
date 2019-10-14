@@ -1,0 +1,60 @@
+# pre-class
+
+
+Make sure you commit this often with meaningful messages. 
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+1. Read the source code for each of the following three functions, puzzle out what they do, and then brainstorm better names.
+
+```
+f1 <- function(string, prefix) {
+  substr(string, 1, nchar(prefix)) == prefix
+}
+
+f2 <- function(x) {
+  if (length(x) <= 1) return(NULL)
+  x[-length(x)]
+}
+f3 <- function(x, y) {
+  rep(y, length.out = length(x))
+}
+```
+```{r }
+#Better name for code f1
+compare_character_vectors <- function(string, prefix) {  
+  substr(string, 1, nchar(prefix)) == prefix 
+}
+#I chose the name "compare_character_vectors" because it appears that the function is comparing substrings in string data starting at the first position and number of character in the prefix data to the prefix data see if they are equal
+
+#Better name for code f2
+rescale_length <- function(x) {
+  if (length(x) <= 1) return(NULL)
+  x[-length(x)]
+}
+#I chose the name "rescale_length" because it looks like the code looks at the length of x and returns NULL if the lenght of x is less than or equal to 1, then shifts the length of x back by 1 for every input of x greater than 1
+
+#Better name for code f3
+replicate_second_argument <- function(x, y) {
+  rep(y, length.out = length(x))
+}
+#I chose the name "replicate_second_argument" because this code seems to output only the value for the second argument while ignoring the first argument 
+```
+
+2. Compare and contrast rnorm() and MASS::mvrnorm(). How could you make them more consistent?
+```{r }
+?rnorm() #is used for normal distribution
+?MASS::mvrnorm()
+```
+
+
+3. Use `lapply()` and an anonymous function to find the coefficient of variation (the standard deviation divided by the mean) for all columns in the mtcars dataset. 
+
+4. Use vapply() to:
+    a. Compute the standard deviation of every column in a numeric data frame.
+    b. Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
