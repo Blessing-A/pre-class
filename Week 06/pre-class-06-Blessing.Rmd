@@ -51,7 +51,7 @@ replicate_second_argument <- function(x, y) {
 #Both functions are used for distribution analysis
 ?rnorm() #is used for normal distribution and requires different input from the MASS::mvrnorm
 ?MASS::mvrnorm() #is used to simulate from a mutlivariate normal distribution. It requires input of a number of samples 
-#To make the functions more consistent, one could perhaps rename them as normal_dist and multivariate_dist respectively
+#To make the functions more consistent, one could perhaps rename them as normal_dist and multivariate_dist and consistent arguments respectively
 ```
 
 
@@ -65,16 +65,22 @@ colnames(mtcars) #checked the colnames in the mtcars dataset to ensure all colum
 4. Use vapply() to:
     a. Compute the standard deviation of every column in a numeric data frame.
     ```{r }
-    df <- is.numeric (data.frame(x, y)) #created a data frame that is numeric
-      for (i in colnames (df)) { #checked the data set for all the columns
-        sd(df[[i]]) #found the standard deviation of the data frame for all the variables in the colnames
-      }
-    vapply(df, colnames, ...) #unable to apply the vapply
+    
+    sd_numeric <- function(df) { #create a function called sd_numeric
+      vapply(df, sd, numeric(1)) #use the vapply to find the sd for the dataset. Use numeric(1) as a place holder for sd because sd returns numerics
+    }
+    vapply(mtcars, sd, numeric(1)) #used the mtcars to check the vapply function
     ```
   
     b. Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
     
 ```{r }
-#Unable to complete this question
+
+vapply(x, is.numeric, logical(1)) #create a vapply that selects only the numeric section of a dataset. The logical(1) as a place holder for is.numeric because "is.numeric" is a logical question that returns TRUE or FALSE
+
+vapply(x[, vapply(x, is.numeric, logical(1))] , sd, numeric(1)) #use the vapply function again to select the standard deviation of all numerics columns for only the numeric columns.
+
+vapply(mtcars[, vapply(mtcars, is.numeric, logical(1))] , sd, numeric(1)) #used mtcars to check the vapply function
+
 ```
    
