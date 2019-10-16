@@ -57,8 +57,9 @@ replicate_second_argument <- function(x, y) {
 
 3. Use `lapply()` and an anonymous function to find the coefficient of variation (the standard deviation divided by the mean) for all columns in the mtcars dataset. 
 ```{r }
-
-
+(function(x)  c(sd (x)) / (mean(x))) #created an anonymous function to find the coefficient of variation (sd/ mean)
+lapply (mtcars, function(x)  c(sd (x)) / (mean(x))) #used lapply on the anonymous function to find the coefficient of variation for all columns in the mtcars dataset
+colnames(mtcars) #checked the colnames in the mtcars dataset to ensure all columns were represented in lapply
 ```
 
 4. Use vapply() to:
