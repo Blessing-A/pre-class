@@ -1,0 +1,162 @@
+---
+title: "Simulations Pre-Class Project"
+date: "Due March 13, 2017 at 5:00pm"
+output:
+  html_document
+
+
+---
+
+<style type="text/css">
+.table {
+
+    width: 80%;
+    margin-left:10%; 
+    margin-right:10%;
+}
+</style>
+```{r,setup, echo=FALSE, cache=TRUE}
+## numbers >= 10^5 will be denoted in scientific notation,
+## and rounded to 2 digits
+options(scipen = 3, digits = 3)
+```
+
+
+
+
+#Project Goals:
+
+
+With this project we will simulate a famoues probability problem. This will not require knowledge of probability or statistics but only the logic to follow the steps in order to simulate this problem. This is one way to solve problems by using the computer. 
+
+ 1. **Gambler's Ruin**: Suppose you have a bankroll of $1000 and make bets of $100 on a fair game. By simulating the outcome directly for at most 5000 iterations of the game (or hands), estimate:
+```{r }
+#Write a function to use for simulations
+set.seed(1) #this ensures that the result will always be the same each time the function runs (for reproducibility) 
+Gambler_Ruin <- function(bet, bankroll, p) { #set three parameters for the function's argument where bet is the bets of $100, bankroll is roll of $1000 and p is for probability success
+  n = 0 #n represents a position from which the number selection for gambling should begin
+  while (bet > 0) { #use a while loop to repeat set of commands as long as the bet is above zero (0)
+  probability_value = runif(1) #this assigns probability value to continuous random uniform distribution of 1 for a fair game
+  if(probability_value <= p){ #if the random uniform distribution is less than or equal to the probability of success
+    bankroll = sum(bet, bankroll) #for a win, bankroll will be the sum of bet and bankroll
+    bet = sum(bet, bankroll)* 0.1 #and bet will be the sum of bet and bankroll multipled by the probability of one fair game win (100/1000 = 0.1)
+  }else{ #for a loss,
+    bankroll = bankroll - bet #bankroll will be the difference between bankroll and bet
+    bet = bet #the bet amount will not change because there was no gain
+  }
+  n = n + 1 #begins an iteration through every value of n (number of plays/gambles) by increments of 1
+  if(bankroll < bet) {break} #when a player loses all their money in the bank (gone bust), the game should end
+} #close the while loop
+  Duration = n #assign the length of time for the whole game (n) to Duration
+  return(Duration) #return the amount of money left in the bank
+} #close the function creation
+```
+```{r }
+#To simulate the outcome for at most 5000 iterations:
+Duration = numeric() #specifies that duration is a numeric vector
+iteration = 5000 #specifies the total number of iterations
+for(i in 1:iteration){ #checks for the variables in the length of number of iterations
+  NextDuration = Gambler_Ruin(100, 900, 0.5) #run the new Gambler_Ruin function to check a 50% (0.5) probability of the first stimulation with $100
+  Duration = c(Duration, NextDuration) #combines the number of Duration and each value of every new gamble
+}
+```
+    a. the probability that you have "busted" (lost all your money) by the time you have placed your one hundredth bet.
+    ```{r }
+   l = length(Duration) #assigns l to the length of duration
+   l1 = length(which(Duration <= 100)) #checks for the length at which duration is less than or equal to 100
+   probability = l1/l #finds the probability of "busted" after placing one hundredth bet
+   probability #returns the probability
+    ```
+    b. the probability that you have busted by the time you have placed your five hundredth bet by simulating the outcome directly. 
+    ```{r }
+    l = length(Duration) #assigns l to the length of duration
+   l1 = length(which(Duration <= 500)) #checks for the length at which duration is less than or equal to 500
+   probability = l1/l #finds the probability of "busted" after placing five hundredth bet
+   probability #returns the probability
+    ```
+    c. the mean time you go bust, given that you go bust within the first 5000 hands.
+    ```{r }
+   l = Duration[which(Duration <= 5000)] #checks for the length at which duration is less than or equal to 5000
+   mean_bust <- mean(l) #finds the mean time to get "busted" within the first 5000 hands
+   mean_bust #returns the mean
+    ```
+    d. the mean and variance of your bankroll after 100 hands (including busts).
+    ```{r }
+#Creating a function similar to the earlier one
+set.seed(1) #this ensures that the result will always be the same each time the function runs (for reproducibility) 
+Gambler_Ruin <- function(bet, bankroll, p) { #set three parameters for the function's argument where bet is the bets of $100, bankroll is roll of $1000 and p is for probability success
+  n = 0 #n represents a position from which the number selection for gambling should begin
+  while (bet > 0) { #use a while loop to repeat set of commands as long as the bet is above zero (0)
+  probability_value = runif(1) #this assigns probability value to continuous random uniform distribution of 1 for a fair game
+  if(probability_value <= p){ #if the random uniform distribution is less than or equal to the probability of success
+    bankroll = sum(bet, bankroll) #for a win, bankroll will be the sum of bet and bankroll
+    bet = sum(bet, bankroll)* 0.1 #and bet will be the sum of bet and bankroll multipled by the probability of one fair game win (100/1000 = 0.1)
+  }else{ #for a loss,
+    bankroll = bankroll - bet #bankroll will be the difference between bankroll and bet
+    bet = bet #the bet amount will not change because there was no gain
+  }
+  n = n + 1 #begins an iteration through every value of n (number of plays/gambles) by increments of 1
+  if(n == 100) {break} #when a player's number of gambles equals the amount used for bet, the game should end
+  if(bankroll < bet) {break} #when a player loses all their money in the bank (gone bust), the game should end
+} #close the while loop
+  Duration = n #assign the length of time for the whole game (n) to Duration
+  return(bankroll) #return the amount of money left in the bank
+} #close the function creation
+```
+```{r }
+#To simulate the outcome for at most 5000 iterations:
+bankroll = numeric() #specifies that iterations is numeric
+iteration = 5000 #specifies the total number of iterations
+for(i in 1:iteration){ #checks for the variables in the length of number of iterations
+  Nextbankroll = Gambler_Ruin(100, 900, 0.5) #run the new Gambler_Ruin function to check a 50% (0.5) probability of the first stimulation with $100
+  bankroll = c(bankroll, Nextbankroll)
+}
+  mean(bankroll) #checks the mean for bankrolls
+  var(bankroll) #checks the mean for bankrolls
+
+```
+    e. the mean and variance of your bankroll after 500 hands (including busts).
+    ```{r }
+#Creating a function similar to the earlier one
+set.seed(1) #this ensures that the result will always be the same each time the function runs (for reproducibility) 
+Gambler_Ruin <- function(bet, bankroll, p) { #set three parameters for the function's argument where bet is the bets of $100, bankroll is roll of $1000 and p is for probability success
+  n = 0 #n represents a position from which the number selection for gambling should begin
+  while (bet > 0) { #use a while loop to repeat set of commands as long as the bet is above zero (0)
+  probability_value = runif(1) #this assigns probability value to continuous random uniform distribution of 1 for a fair game
+  if(probability_value <= p){ #if the random uniform distribution is less than or equal to the probability of success
+    bankroll = sum(bet, bankroll) #for a win, bankroll will be the sum of bet and bankroll
+    bet = sum(bet, bankroll)* 0.1 #and bet will be the sum of bet and bankroll multipled by the probability of one fair game win (100/1000 = 0.1)
+  }else{ #for a loss,
+    bankroll = bankroll - bet #bankroll will be the difference between bankroll and bet
+    bet = bet #the bet amount will not change because there was no gain
+  }
+  n = n + 1 #begins an iteration through every value of n (number of plays/gambles) by increments of 1
+  if(n == 500) {break} #when a player's number of gambles equals the amount used for bet, the game should end
+  if(bankroll < bet) {break} #when a player loses all their money in the bank (gone bust), the game should end
+} #close the while loop
+  Duration = n #assign the length of time for the whole game (n) to Duration
+  return(bankroll) #return the amount of money left in the bank
+} #close the function creation
+```
+```{r }
+#To simulate the outcome for at most 5000 iterations:
+bankroll = numeric() #specifies that iterations is numeric
+iteration = 5000 #specifies the total number of iterations
+for(i in 1:iteration){ #checks for the variables in the length of number of iterations
+  Nextbankroll = Gambler_Ruin(100, 900, 0.5) #run the new Gambler_Ruin function to check a 50% (0.5) probability of the first stimulation with $100
+  bankroll = c(bankroll, Nextbankroll)
+}
+  mean(bankroll) #checks the mean for bankrolls
+  var(bankroll) #checks the mean for bankrolls
+    ```
+ 
+Note: you *must* stop playing if your player has gone bust. How will you handle this in the `for` loop?
+
+
+2. **Markov Chains**. Suppose you have a game where the probability of winning on your first hand is 48%; each time you win, that probability goes up by one percentage point for the next game (to a maximum of 100%, where it must stay), and each time you lose, it goes back down to 48%. Assume you cannot go bust and that the size of your wager is a constant $100.
+    a. Is this a fair game? Simulate one hundred thousand sequential hands to determine the size of your return. Then repeat this simulation 99 more times to get a range of values to calculate the expectation.
+    ```{r }
+   
+    ```
+    b. Repeat this process but change the starting probability to a new value within 2% either way. Get the expected return after 100 repetitions. Keep exploring until you have a return value that is as fair as you can make it. Can you do this automatically?
+    c. Repeat again, keeping the initial probability at 48%, but this time change the probability increment to a value different from 1%. Get the expected return after 100 repetitions. Keep changing this value until you have a return value that is as fair as you can make it. 
