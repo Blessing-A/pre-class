@@ -1,0 +1,65 @@
+---
+title: "Shiny.App Pre-class"
+author: "Blessing A"
+date: "12/2/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r }
+#Installing Shiny
+install.packages("shiny")
+```
+
+```{r }
+#Using the example from Walkthrough by Dean Attali to test success of Shiny installation
+library(shiny)
+runExample("01_hello")
+```
+```{r }
+#Using the basic format for Shiny app to create a shiny app for standard normal distribution
+library(shiny)
+ui <- fluidPage(
+div(titlePanel("Simple App for Standard Normal Statistics"), style = "color: green;"),
+sidebarLayout(
+  sidebarPanel(
+    sliderInput("normalInput", "Pick a value", min = 0, max = 100, value = 10)
+    ),
+  mainPanel(
+    plotOutput("simplePlot")
+    )
+  )
+)
+server <- function(input, output) {
+  output$simplePlot <- renderPlot({
+    x = seq(-5, 5, length = input$normalInput) #provides equally spaced values between -5 and 5 for the length of the sliderInput
+    y = 1/sqrt(2*pi)*exp(-x^2/2) #finds the probability density function of each entry of x
+    plot(x, y, type = "l", lwd = 2, col = "red") #plots y versus x and uses a solid line with line width of 2 and color choice of red for the distribution   
+  })
+}
+shinyApp(ui = ui, server = server)
+```
+
